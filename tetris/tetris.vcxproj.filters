@@ -36,4 +36,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="logo.jpg">
+      <Filter>Archivos de origen</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

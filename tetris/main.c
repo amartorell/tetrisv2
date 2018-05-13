@@ -103,14 +103,12 @@ int main(void)
 
 		return -1;
 	}
-
+	al_set_window_title(display, "TETRIS");
+	
 	if (!al_install_keyboard()) {                                                   //instalo el teclado
 		fprintf(stderr, "failed to initialize the keyboard!\n");
 		return -1;
 	}
-
-
-
 	board = al_create_bitmap(ANCHO_BLOQUE*(N), ALTURA_BLOQUE*(N + 5));
 	if (!board) {
 		fprintf(stderr, "failed to create bloque bitmap!\n");
@@ -177,7 +175,8 @@ int main(void)
 		al_uninstall_system();
 		return -1;
 	}
-
+	ALLEGRO_BITMAP * icon = al_load_bitmap("logo.jpg");
+	al_set_display_icon(display, icon);
 	if (!(pause_image = al_load_bitmap("pause.bmp")))
 	{
 		fprintf(stderr, "failed to load image !\n");
