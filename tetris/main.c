@@ -26,31 +26,6 @@
 
 
 
-  //void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t mat[N + 5][N]);
-  //funcion que dibuja en el display como va el tablero de juego mostrando sus piezas 
-
-
-  //constantes allegro
-
-  //#define SCREEN_W		800
-  //#define SCREEN_H		600
-  //#define ALTURA_BLOQUE           20
-  //#define ANCHO_BLOQUE            20
-  //#define TIEMPO_CAIDA            10
-  //#define TIEMPO_ESPERA_ULTIMO_MOV           0.500
-  //#define TIEMPO                  0.500   
-  //
-  //#define BARRERA_NIVEL           5
-  //#define NIVEL_INICIAL           1
-  //#define PUNTAJE_INICIAL         0   
-  //
-  //#define MINIMO_X                0
-  //#define MAXIMO_X                N
-  //
-  //#define MAXIMO_Y                (N+5) 
-  //#define MAX_NIVEL               10  
-
-
 
 
 

@@ -14,7 +14,7 @@
 #include "constantesAllegro.h"
 
 
-void print_score(ALLEGRO_FONT *, uint16_t puntaje, uint16_t nivel, ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *board, uint8_t tablero[N + 5][N],uint8_t next_pieza);
+void print_score(ALLEGRO_FONT *, uint16_t puntaje, uint16_t nivel, ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *board, uint8_t tablero[N + 5][N],uint8_t next_pieza[SIZE][SIZE]);
 
 
 void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t mat[N + 5][N]);
