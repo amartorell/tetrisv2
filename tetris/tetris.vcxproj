@@ -135,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="allegro_fun.h" />
     <ClInclude Include="constantes.h" />
+    <ClInclude Include="constantesAllegro.h" />
     <ClInclude Include="manejomat.h" />
   </ItemGroup>
   <ItemGroup>

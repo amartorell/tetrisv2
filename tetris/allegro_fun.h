@@ -11,6 +11,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include "constantesAllegro.h"
 
 
 void print_score(ALLEGRO_FONT *, uint16_t puntaje, uint16_t nivel, ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP *board, uint8_t tablero[N + 5][N],uint8_t next_pieza);

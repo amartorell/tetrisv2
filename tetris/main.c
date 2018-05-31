@@ -22,7 +22,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include "allegro_fun.h"
-
+#include "constantesAllegro.h"
 
 
 
