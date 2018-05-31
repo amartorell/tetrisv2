@@ -21,47 +21,42 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include "allegro_fun.h"
+
+
+
+
+  //void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t mat[N + 5][N]);
+  //funcion que dibuja en el display como va el tablero de juego mostrando sus piezas 
+
+
+  //constantes allegro
+
+  //#define SCREEN_W		800
+  //#define SCREEN_H		600
+  //#define ALTURA_BLOQUE           20
+  //#define ANCHO_BLOQUE            20
+  //#define TIEMPO_CAIDA            10
+  //#define TIEMPO_ESPERA_ULTIMO_MOV           0.500
+  //#define TIEMPO                  0.500   
+  //
+  //#define BARRERA_NIVEL           5
+  //#define NIVEL_INICIAL           1
+  //#define PUNTAJE_INICIAL         0   
+  //
+  //#define MINIMO_X                0
+  //#define MAXIMO_X                N
+  //
+  //#define MAXIMO_Y                (N+5) 
+  //#define MAX_NIVEL               10  
 
 
 
 
 
-void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t mat[N + 5][N]);
-//funcion que dibuja en el display como va el tablero de juego mostrando sus piezas 
-
-
-//constantes allegro
-
-#define SCREEN_W		800
-#define SCREEN_H		600
-#define ALTURA_BLOQUE           20
-#define ANCHO_BLOQUE            20
-#define TIEMPO_CAIDA            10
-#define TIEMPO_ESPERA_ULTIMO_MOV           0.500
-#define TIEMPO                  0.500   
-
-#define BARRERA_NIVEL           5
-#define NIVEL_INICIAL           1
-#define PUNTAJE_INICIAL         0   
-
-#define MINIMO_X                0
-#define MAXIMO_X                N
-
-#define MAXIMO_Y                (N+5) 
-#define MAX_NIVEL               10  
-
-
-enum MYKEYS {
-	KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT //flechitas teclado
-};
-
-
-
-/**/
 
 int main(void)
 {
-
 	uint8_t tablero[N + 5][N];
 
 	ALLEGRO_DISPLAY *display = NULL;    //display
@@ -80,7 +75,7 @@ int main(void)
 
 	ALLEGRO_FONT * tipo_letra = NULL;
 
-
+	ALLEGRO_BITMAP * icon = NULL;
 
 	bool do_exit = FALSE; //control de cerrar display
 	bool key_pressed[4] = { FALSE, FALSE, FALSE, FALSE }; //Estado de teclas, true cuando esta apretada
@@ -104,7 +99,7 @@ int main(void)
 		return -1;
 	}
 	al_set_window_title(display, "TETRIS");
-	
+
 	if (!al_install_keyboard()) {                                                   //instalo el teclado
 		fprintf(stderr, "failed to initialize the keyboard!\n");
 		return -1;
@@ -175,7 +170,7 @@ int main(void)
 		al_uninstall_system();
 		return -1;
 	}
-	ALLEGRO_BITMAP * icon = al_load_bitmap("logo.jpg");
+	icon = al_load_bitmap("logo.jpg");
 	al_set_display_icon(display, icon);
 	if (!(pause_image = al_load_bitmap("pause.bmp")))
 	{
@@ -247,11 +242,12 @@ int main(void)
 	set_board(tablero); //para setear el tablero
 	srand(time(NULL));  //para iniciar la semilla del random
 	bloque_t * pieza;
+	bloque_t * next_pieza;
 	uint16_t puntaje = 0;
 
 
 	pieza = crear_pieza();
-
+	next_pieza = crear_pieza();
 
 
 	bool start_game = FALSE;
@@ -281,9 +277,21 @@ int main(void)
 			puntaje = PUNTAJE_INICIAL;
 			nivel = NIVEL_INICIAL;
 			restart = FALSE;
+			al_stop_timer(timer_pieza); //para el timer de tiempo
+			al_play_sample(sample, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+
+			timer_pieza = al_create_timer(TIEMPO);
+			//proteccion por si hay error
+			if (!timer_pieza) {
+				fprintf(stderr, "failed to create timer!\n");
+				return -1;
+			}
+			
+			al_register_event_source(event_queue, al_get_timer_event_source(timer_pieza));
+			al_start_timer(timer_pieza);
 		}
 
-		if (puntaje == (nivel*BARRERA_NIVEL))
+		if (puntaje >= (nivel*BARRERA_NIVEL))
 		{
 			al_stop_timer(timer_pieza); //para el timer de tiempo
 			timer_pieza = al_create_timer(TIEMPO - (0.1*TIEMPO*nivel));
@@ -301,52 +309,12 @@ int main(void)
 
 		}
 
-		while (!start_game)
-		{
-			al_draw_bitmap(start_image, 0, 0, 0); //cargo el menu de game over
-			al_flip_display();
-
-
-			ALLEGRO_EVENT ev;
-			if (al_get_next_event(event_queue, &ev))
-			{
-				if (ev.type == ALLEGRO_EVENT_KEY_UP)    //control tecla levantada
-				{
-					switch (ev.keyboard.keycode)
-					{
-					case ALLEGRO_KEY_ENTER:
-					{
-						start_game = TRUE;
-						break;
-					}
-
-					case ALLEGRO_KEY_ESCAPE:
-					{
-						start_game = TRUE;
-						do_exit = TRUE;
-						break;
-					}
-					}
-				}
-
-				al_set_target_bitmap(al_get_backbuffer(display)); //vuelvo a pintar de negro el bitmap
-				al_clear_to_color(al_color_name("black"));
-
-			}
-		}
-
-		al_set_target_bitmap(al_get_backbuffer(display)); //vuelvo a pintar de negro el bitmap
-		al_clear_to_color(al_color_name("black")); //para actualizar el score y que no se superponga
-
-		al_draw_text(tipo_letra, al_color_name("lightsteelblue"), 100, 150, 0, "SCORE:");
-		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 100 + 24 * 3, 150 + 24, 0, "%d", puntaje);
-
-		al_draw_text(tipo_letra, al_color_name("lightsteelblue"), 100, 150 + 24 * 5, 0, "LEVEL:");
-		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 100 + 24 * 3, 150 + 24 * 6, 0, "%d", nivel);
-
-		dibujar_tablero(board, display, tablero);  //siempre dibujo el tablero
-
 		ALLEGRO_EVENT ev;
+		if (!start_game)
+		{
+			start_game_scenario(event_queue,ev,start_image,display,&start_game,&do_exit);
+		}
+		print_score(tipo_letra, puntaje, nivel, display, board, tablero,next_pieza->mat_de_pieza);
 		if (al_get_next_event(event_queue, &ev))
 		{
 			if (ev.type == ALLEGRO_EVENT_TIMER)
@@ -355,52 +323,19 @@ int main(void)
 				{
 					if (key_pressed[KEY_UP])     //poner condiciones del rotar
 					{
-						rotacion = rotate(pieza, tablero);
-						if (rotacion)
-						{
-							clear_sector(tablero, pieza->x, pieza->y, SIZE + 1, SIZE + 1, OCUPADO);
-							poner_pieza_en_tablero(pieza, tablero, pieza->x, pieza->y);
-
-
-						}
-
+						rotar_bloque(tablero, pieza);
 					}
 					if ((key_pressed[KEY_DOWN])) //me fijo en el bool si me puedo seguir moviendo para abajo
 					{
-
-						(pieza->mov_vertical) = chequear_movimiento(pieza, tablero, pieza->mov_vertical, ABAJO);
-						if ((pieza->mov_vertical))
-						{
-							clear_sector(tablero, pieza->x, pieza->y, SIZE + 1, SIZE + 1, OCUPADO);
-							pieza->y++;
-							poner_pieza_en_tablero(pieza, tablero, pieza->x, pieza->y);
-
-
-						}
+						mover_bloque(tablero, pieza, ABAJO);
 					}
 					if ((key_pressed[KEY_LEFT])) //me fijo si la pieza esta presionada y si puedo moverme a la izquierda 
 					{
-						(pieza->mov_izq) = chequear_movimiento(pieza, tablero, pieza->mov_izq, IZQUIERDA);
-						if (pieza->mov_izq)
-						{
-							clear_sector(tablero, pieza->x, pieza->y, SIZE + 1, SIZE + 1, OCUPADO);
-							pieza->x--;
-							poner_pieza_en_tablero(pieza, tablero, pieza->x, pieza->y);
-
-						}
+						mover_bloque(tablero, pieza, IZQUIERDA);
 					}
 					if ((key_pressed[KEY_RIGHT])) ////me fijo si la pieza esta presionada y si puedo moverme a la derecha
 					{
-						(pieza->mov_der) = chequear_movimiento(pieza, tablero, pieza->mov_der, DERECHA);
-
-						if (pieza->mov_der)
-						{
-							clear_sector(tablero, pieza->x, pieza->y, SIZE, SIZE, OCUPADO);
-							pieza->x++;
-							poner_pieza_en_tablero(pieza, tablero, pieza->x, pieza->y);
-
-
-						}
+						mover_bloque(tablero, pieza, DERECHA);
 					}
 
 
@@ -409,10 +344,7 @@ int main(void)
 				{
 					if ((pieza->y < (N + 2)) && chequear_movimiento(pieza, tablero, pieza->mov_vertical, ABAJO))
 					{
-
-						clear_sector(tablero, pieza->x, pieza->y, SIZE, SIZE, OCUPADO);
-						pieza->y++;
-						poner_pieza_en_tablero(pieza, tablero, pieza->x, pieza->y);
+						mover_bloque(tablero, pieza, ABAJO);
 
 					}
 					if (!chequear_movimiento(pieza, tablero, pieza->mov_vertical, ABAJO))
@@ -426,67 +358,19 @@ int main(void)
 
 					if (!chequear_movimiento(pieza, tablero, pieza->mov_vertical, ABAJO))
 					{
+						estampar_bloque(pieza, tablero, &puntaje);
+						dibujar_tablero(board, display, tablero,next_pieza->mat_de_pieza);
+						
+						copiar_pieza(pieza, next_pieza);
+						free(next_pieza);
+						next_pieza = crear_pieza();
 
-						fijar_bloque(tablero, pieza);
-						limpiar_matriz(tablero, &puntaje);
-						dibujar_tablero(board, display, tablero);
-						pieza = crear_pieza();
-
-						if ((nivel == MAX_NIVEL) || (end_game = chequear_lineas(tablero, ALTURA_LIMITE, N, FIJO)))  //que pasa cuando se llega a game over
+						if ((nivel >= MAX_NIVEL) || (end_game = chequear_lineas(tablero, ALTURA_LIMITE, N, FIJO)))  //que pasa cuando se llega a game over
 						{
-
-							if (!(game_over_image = al_load_bitmap("game_over.bmp")))
-							{
-								fprintf(stderr, "failed to load image !\n");
-							}
-
-
-							al_stop_timer(timer_pieza); //paro los dos timer 
-							al_stop_timer(ultimo_movimiento);
-
-							al_draw_bitmap(game_over_image, 0, 0, 0); //cargo el menu de game over
-							al_flip_display();
-
-
-							while (end_game)
-							{
-								if (al_get_next_event(event_queue, &ev)) //busco un evento donde se presione devuelta la tecla
-								{
-
-
-									if (ev.type == ALLEGRO_EVENT_KEY_UP)
-									{
-										switch (ev.keyboard.keycode)
-										{
-										case ALLEGRO_KEY_ESCAPE:    //CASO TERMINO EL JUEGO
-										{
-											do_exit = TRUE;
-											end_game = FALSE;
-											break;
-										}
-										case ALLEGRO_KEY_R:     //caso reinicio
-										{
-											restart = TRUE;       //pongo como true asi puedo reiniciar el juego
-											end_game = FALSE;
-											break;
-										}
-
-										}
-
-									}
-								}
-							}
-
-							al_start_timer(timer_pieza);    //vuelvo a iniciar los timers
-							al_start_timer(ultimo_movimiento);
-
-							al_set_target_bitmap(al_get_backbuffer(display)); //vuelvo a pintar de negro el bitmap
-							al_clear_to_color(al_color_name("black"));
+							end_game_scenario(event_queue, ev, timer_pieza, ultimo_movimiento, display, game_over_image, &restart, &do_exit);
 
 						}
 					}
-
-
 					al_stop_timer(ultimo_movimiento);
 				}
 
@@ -545,59 +429,7 @@ int main(void)
 
 				case ALLEGRO_KEY_P:
 				{
-					al_stop_timer(timer_pieza); //paro los dos timers 
-					al_stop_timer(ultimo_movimiento);
-					bool pausa = FALSE;
-
-					if (!(pause_image = al_load_bitmap("pause.bmp")))  //cargo la imagen de pausa
-					{
-						fprintf(stderr, "failed to load image !\n");
-					}
-
-
-					al_draw_bitmap(pause_image, 0, 0, 0);
-					al_flip_display();
-
-
-
-					while (!pausa)
-					{
-						if (al_get_next_event(event_queue, &ev)) //busco un evento donde se presione devuelta la tecla
-						{
-
-
-							if (ev.type == ALLEGRO_EVENT_KEY_UP)
-							{
-								switch (ev.keyboard.keycode)
-								{
-								case ALLEGRO_KEY_P:
-									pausa = TRUE;
-									break;
-
-								case ALLEGRO_KEY_ESCAPE:    //si se aprieta escape en medio de la pausa cierro todo
-								{
-									pausa = TRUE;
-									do_exit = TRUE;
-									break;
-								}
-
-								default:
-									pausa = FALSE;
-									break;
-								}
-							}
-						}
-					}
-					al_start_timer(timer_pieza);    //vuelvo a iniciar los timers
-					al_start_timer(ultimo_movimiento);
-
-
-					al_set_target_bitmap(al_get_backbuffer(display)); //vuelvo a pintar de negro el bitmap
-					al_clear_to_color(al_color_name("black"));
-
-
-					al_flip_display();
-
+					pause_scenario(event_queue, ev, display, pause_image, timer_pieza, ultimo_movimiento, sample, &do_exit);
 					break;
 				}
 
@@ -614,6 +446,7 @@ int main(void)
 	//destruimos todo al finalizar el programa
 
 	free(pieza);
+	free(next_pieza);
 	al_destroy_bitmap(board);
 	al_destroy_display(display);
 	al_shutdown_image_addon();
@@ -644,48 +477,53 @@ int main(void)
 
 ////////////////////////////////FUNCIONES DE IMPRESION EN EL DISPLAY/////////////////////////////////////////////////////
 
-
-void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t mat[N + 5][N])
-{
-
-	al_set_target_bitmap(bitmap);
-	al_clear_to_color(al_color_name("black"));
-
-
-
-	int i, j;
-	for (i = (ALTURA_LIMITE - 1); i < N + 5; i++)
-	{
-		for (j = 0; j < N; j++)
-		{
-
-			if ((i == (ALTURA_LIMITE - 1)))
-			{
-				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("red"));
-			}
-			if (mat[i][j] == OCUPADO)
-			{
-				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("goldenrod"));
-			}
-			else if (mat[i][j] == FIJO)
-			{
-				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("lightsteelblue"));
-			}
-			else if (mat[i][j] == VACANTE)
-			{
-				al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
-			}
-			else if ((mat[i][j] == BORDE))
-			{
-				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("red"));
-			}
-
-			al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
-		}
-
-	}
-	al_set_target_bitmap(al_get_backbuffer(display));
-	al_draw_bitmap(bitmap, 240, 50, 0);
-	al_flip_display();
-}
-
+//
+//void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t mat[N + 5][N])
+//{
+//
+//	al_set_target_bitmap(bitmap);
+//	al_clear_to_color(al_color_name("black"));
+//
+//
+//
+//	int i, j;
+//	for (i = (ALTURA_LIMITE - 1); i < N + 5; i++)
+//	{
+//		for (j = 0; j < N; j++)
+//		{
+//
+//			if ((i == (ALTURA_LIMITE - 1)))
+//			{
+//				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("red"));
+//			}
+//			if (mat[i][j] == OCUPADO)
+//			{
+//				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("goldenrod"));
+//			}
+//			else if (mat[i][j] == FIJO)
+//			{
+//				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("lightsteelblue"));
+//			}
+//			else if (mat[i][j] == VACANTE)
+//			{
+//				al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
+//			}
+//			else if ((mat[i][j] == BORDE))
+//			{
+//				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("red"));
+//			}
+//
+//			al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
+//		}
+//
+//	}
+//	al_set_target_bitmap(al_get_backbuffer(display));
+//	al_draw_bitmap(bitmap, 240, 50, 0);
+//	al_flip_display();
+//}
+//
+//void start_allegro(ALLEGRO_DISPLAY * display, ALLEGRO_BITMAP * board, ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_TIMER * timer_pieza, ALLEGRO_TIMER * timer_de_caida, ALLEGRO_TIMER * ultimo_movimiento, ALLEGRO_BITMAP * pause_image, ALLEGRO_BITMAP * start_image, ALLEGRO_BITMAP * game_over_image, ALLEGRO_SAMPLE * sample, ALLEGRO_FONT * tipo_letra, ALLEGRO_BITMAP * icon)
+//{
+//
+//}
+//

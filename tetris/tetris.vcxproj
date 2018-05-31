@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{375D1FF3-7BA6-4555-A4C8-C8FCD28A8B74}</ProjectGuid>
     <RootNamespace>tetris</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="allegro_fun.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="manejomat.c" />
     <ClCompile Include="testeo.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="allegro_fun.h" />
     <ClInclude Include="constantes.h" />
     <ClInclude Include="manejomat.h" />
   </ItemGroup>

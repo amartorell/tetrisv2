@@ -24,12 +24,18 @@
     <ClCompile Include="testeo.c">
       <Filter>Archivos de recursos</Filter>
     </ClCompile>
+    <ClCompile Include="allegro_fun.c">
+      <Filter>Archivos de recursos</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constantes.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="manejomat.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="allegro_fun.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
