@@ -24,7 +24,7 @@ typedef int bool;
 ////////////////////////////////////////
 
 
-#define N 8		//n tiene que ser multiplo de cuatro
+#define N 16		//n tiene que ser multiplo de cuatro
 #define VALIDO 1
 #define INVALIDO 0
 

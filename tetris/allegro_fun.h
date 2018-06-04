@@ -23,7 +23,7 @@ void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t
 void start_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev, ALLEGRO_BITMAP * start_image, ALLEGRO_DISPLAY * display, bool * start_game, bool * do_exit);
 
 
-void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev, ALLEGRO_TIMER* timer_pieza, ALLEGRO_TIMER *ultimo_movimiento, ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP* game_over_image, bool *restart, bool * do_exit);
+void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev, ALLEGRO_TIMER* timer_pieza, ALLEGRO_TIMER *ultimo_movimiento, ALLEGRO_DISPLAY *display, ALLEGRO_FONT * tipo_letra, ALLEGRO_FONT * tipo_letra_pausa_1, uint16_t puntaje, bool *restart, bool * do_exit);
 
 void pause_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev,ALLEGRO_DISPLAY * display, ALLEGRO_BITMAP * pause_image, ALLEGRO_TIMER * timer_pieza, ALLEGRO_TIMER * ultimo_movimiento, ALLEGRO_SAMPLE * sample,bool * do_exit);
 

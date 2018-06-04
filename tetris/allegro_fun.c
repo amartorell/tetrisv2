@@ -89,21 +89,38 @@ void start_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev, AL
 
 
 
-void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev,ALLEGRO_TIMER* timer_pieza, ALLEGRO_TIMER *ultimo_movimiento, ALLEGRO_DISPLAY *display, ALLEGRO_BITMAP* game_over_image , bool *restart, bool * do_exit)
+void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev,ALLEGRO_TIMER* timer_pieza, ALLEGRO_TIMER *ultimo_movimiento, ALLEGRO_DISPLAY *display, ALLEGRO_FONT * tipo_letra ,ALLEGRO_FONT * tipo_letra_pausa_1, uint16_t puntaje,bool *restart, bool * do_exit)
 {
 	bool end_game = TRUE;
-	if (!(game_over_image = al_load_bitmap("game_over.bmp")))
+	/*if (!(game_over_image = al_load_bitmap("game_over.bmp")))
 	{
 		fprintf(stderr, "failed to load image !\n");
-	}
+	}*/
+
+	al_set_target_bitmap(al_get_backbuffer(display)); //vuelvo a pintar de negro el bitmap
+	al_clear_to_color(al_color_name("black")); //para actualizar el score y que no se superponga
+
+
+	
 
 	al_stop_samples();
 	al_stop_timer(timer_pieza); //paro los dos timer 
 	al_stop_timer(ultimo_movimiento);
 
-	al_draw_bitmap(game_over_image, 0, 0, 0); //cargo el menu de game over
-	al_flip_display();
+	//al_draw_bitmap(game_over_image, 0, 0, 0); //cargo el menu de game over
+	//al_flip_display();
 	////////////////////////////////
+	
+
+	al_draw_text(tipo_letra_pausa_1, al_color_name("royalblue"), 130, 135, 0, "GAME OVER");
+	
+	al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 340 ,135+60+75+OFFSET*2 , 0, "SCORE : %d", puntaje);
+	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), 165+110, 135 + 60 + 75 +OFFSET*4, 0, "PRESS ESC TO EXIT");
+	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), 165+95, 135 + 60 + 75 + OFFSET*6, 0, "PRESS R TO RESTART");
+	/*al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 165 + 105, 135 + 60 + 75 + OFFSET * 8, 0, "NEW HIGHSCORE: %d",highscore);*/
+
+	al_flip_display();
+	
 	while (end_game)
 	{
 		if (al_get_next_event(event_queue, &ev)) //busco un evento donde se presione devuelta la tecla
