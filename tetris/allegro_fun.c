@@ -92,10 +92,6 @@ void start_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev, AL
 void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev,ALLEGRO_TIMER* timer_pieza, ALLEGRO_TIMER *ultimo_movimiento, ALLEGRO_DISPLAY *display, ALLEGRO_FONT * tipo_letra ,ALLEGRO_FONT * tipo_letra_pausa_1, uint16_t puntaje,bool *restart, bool * do_exit)
 {
 	bool end_game = TRUE;
-	/*if (!(game_over_image = al_load_bitmap("game_over.bmp")))
-	{
-		fprintf(stderr, "failed to load image !\n");
-	}*/
 
 	al_set_target_bitmap(al_get_backbuffer(display)); //vuelvo a pintar de negro el bitmap
 	al_clear_to_color(al_color_name("black")); //para actualizar el score y que no se superponga
@@ -107,9 +103,6 @@ void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev,ALLEG
 	al_stop_timer(timer_pieza); //paro los dos timer 
 	al_stop_timer(ultimo_movimiento);
 
-	//al_draw_bitmap(game_over_image, 0, 0, 0); //cargo el menu de game over
-	//al_flip_display();
-	////////////////////////////////
 	
 
 	al_draw_text(tipo_letra_pausa_1, al_color_name("royalblue"), 130, 135, 0, "GAME OVER");

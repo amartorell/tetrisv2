@@ -133,8 +133,7 @@ int main(void)
 
 	ALLEGRO_BITMAP * pause_image;       //para las distintas imagenes de los distintos menues
 	ALLEGRO_BITMAP * start_image;
-	ALLEGRO_BITMAP * game_over_image;
-
+	
 	ALLEGRO_SAMPLE *sample = NULL;   //para cargar la musica
 
 	ALLEGRO_FONT * tipo_letra = NULL;
@@ -189,14 +188,6 @@ int main(void)
 		return -1;
 	}
 
-	game_over_image = al_create_bitmap(SCREEN_W, SCREEN_H);
-	if (!game_over_image) {
-		fprintf(stderr, "failed to create bloque bitmap!\n");
-		return -1;
-	}
-
-
-
 	if (!al_init_primitives_addon()) {                                        //inicio las primitivas
 		fprintf(stderr, "failed to initialize primitives!\n");
 		return -1;
@@ -245,11 +236,6 @@ int main(void)
 	}
 
 	if (!(start_image = al_load_bitmap("start_menu.bmp")))
-	{
-		fprintf(stderr, "failed to load image !\n");
-	}
-
-	if (!(game_over_image = al_load_bitmap("game_over.bmp")))
 	{
 		fprintf(stderr, "failed to load image !\n");
 	}
@@ -436,11 +422,6 @@ int main(void)
 						free(next_pieza);
 						next_pieza = crear_pieza();
 
-						if ((nivel >= MAX_NIVEL) || (end_game = chequear_lineas(tablero, ALTURA_LIMITE, N, FIJO)))  //que pasa cuando se llega a game over
-						{
-							end_game_scenario(event_queue, ev, timer_pieza, ultimo_movimiento, display, tipo_letra,tipo_letra_pausa_1, puntaje,&restart, &do_exit);
-
-						}
 					}
 					al_stop_timer(ultimo_movimiento);
 				}
@@ -507,6 +488,12 @@ int main(void)
 				}
 			}
 
+			if ((nivel >= MAX_NIVEL) || (end_game = chequear_lineas(tablero, ALTURA_LIMITE, N, FIJO)))  //que pasa cuando se llega a game over
+			{
+				end_game_scenario(event_queue, ev, timer_pieza, ultimo_movimiento, display, tipo_letra, tipo_letra_pausa_1, puntaje, &restart, &do_exit);
+
+			}
+
 		}
 
 
@@ -522,7 +509,6 @@ int main(void)
 	al_destroy_display(display);
 	al_shutdown_image_addon();
 	al_destroy_bitmap(start_image);
-	al_destroy_bitmap(game_over_image);
 	al_destroy_bitmap(pause_image);
 	al_destroy_timer(timer_de_caida);
 	al_destroy_timer(timer_pieza);
