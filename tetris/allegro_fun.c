@@ -89,7 +89,7 @@ void start_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev, AL
 
 
 
-void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev,ALLEGRO_TIMER* timer_pieza, ALLEGRO_TIMER *ultimo_movimiento, ALLEGRO_DISPLAY *display, ALLEGRO_FONT * tipo_letra ,ALLEGRO_FONT * tipo_letra_pausa_1, uint16_t puntaje,bool *restart, bool * do_exit)
+void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev,ALLEGRO_TIMER* timer_pieza, ALLEGRO_TIMER *ultimo_movimiento, ALLEGRO_DISPLAY *display, ALLEGRO_FONT * tipo_letra ,ALLEGRO_FONT * tipo_letra_pausa_1, uint16_t puntaje,uint16_t highscore,bool *restart, bool * do_exit)
 {
 	bool end_game = TRUE;
 
@@ -107,10 +107,19 @@ void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev,ALLEG
 
 	al_draw_text(tipo_letra_pausa_1, al_color_name("royalblue"), 130, 135, 0, "GAME OVER");
 	
-	al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 340 ,135+60+75+OFFSET*2 , 0, "SCORE : %d", puntaje);
+	
 	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), 165+110, 135 + 60 + 75 +OFFSET*4, 0, "PRESS ESC TO EXIT");
 	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), 165+95, 135 + 60 + 75 + OFFSET*6, 0, "PRESS R TO RESTART");
-	/*al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 165 + 105, 135 + 60 + 75 + OFFSET * 8, 0, "NEW HIGHSCORE: %d",highscore);*/
+	if (puntaje > highscore)
+	{
+		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 165 + 105, 135 + 60 + 75 + OFFSET * 9, 0, "NEW HIGHSCORE: %d",puntaje);
+	}
+	else
+	{
+		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 340, 135 + 60 + 75 + OFFSET * 2, 0, "SCORE : %d", puntaje);
+	}
+	
+	
 
 	al_flip_display();
 	
@@ -210,14 +219,20 @@ void pause_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev, ALLEGRO
 	al_flip_display();
 }
 
-void print_score(ALLEGRO_FONT *tipo_letra, uint16_t puntaje, uint16_t nivel, ALLEGRO_DISPLAY *display,ALLEGRO_BITMAP *board, uint8_t tablero[N + 5][N],uint8_t next_pieza[SIZE][SIZE])
+void print_score(ALLEGRO_FONT *tipo_letra, uint16_t puntaje,uint16_t highscore, uint16_t nivel, ALLEGRO_DISPLAY *display,ALLEGRO_BITMAP *board, uint8_t tablero[N + 5][N],uint8_t next_pieza[SIZE][SIZE])
 {
 	al_set_target_bitmap(al_get_backbuffer(display)); //vuelvo a pintar de negro el bitmap
 	al_clear_to_color(al_color_name("black")); //para actualizar el score y que no se superponga
 
 	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), POS_X - 70, POS_Y, 0, "HIGH SCORE:");
-	al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), POS_X+ OFFSET * 3, POS_Y + OFFSET, 0, "%d", puntaje);
-
+	if (puntaje > highscore)
+	{
+		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), POS_X + OFFSET * 3, POS_Y + OFFSET, 0, "%d", puntaje);
+	}
+	else
+	{
+		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), POS_X + OFFSET * 3, POS_Y + OFFSET, 0, "%d", highscore);
+	}
 	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), POS_X, POS_Y + OFFSET* 5, 0, "SCORE:");
 	al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), POS_X+ OFFSET * 3, POS_Y + OFFSET * 6, 0, "%d", puntaje);
 

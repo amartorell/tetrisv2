@@ -9,7 +9,7 @@
 #define TIEMPO_ESPERA_ULTIMO_MOV           0.500
 #define TIEMPO                  0.500   
 
-#define BARRERA_NIVEL           1
+#define BARRERA_NIVEL           5
 #define NIVEL_INICIAL           1
 #define PUNTAJE_INICIAL         0   
 

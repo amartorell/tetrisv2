@@ -88,6 +88,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,6 +131,7 @@
     <ClCompile Include="allegro_fun.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="manejomat.c" />
+    <ClCompile Include="scoreManager.c" />
     <ClCompile Include="testeo.c" />
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +139,7 @@
     <ClInclude Include="constantes.h" />
     <ClInclude Include="constantesAllegro.h" />
     <ClInclude Include="manejomat.h" />
+    <ClInclude Include="scoreManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

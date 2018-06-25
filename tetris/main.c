@@ -112,7 +112,7 @@
 #include <allegro5/allegro_ttf.h>
 #include "allegro_fun.h"
 #include "constantesAllegro.h"
-
+#include"scoreManager.h"
 
 
 
@@ -310,9 +310,9 @@ int main(void)
 	bool start_game = FALSE;
 
 
-	uint16_t   nivel = NIVEL_INICIAL;     //establezco nivel inicial
+	uint16_t nivel = NIVEL_INICIAL;     //establezco nivel inicial
 
-	uint16_t    highscore;
+	uint16_t highscore=get_highscore("highscore.txt");
 
 
 
@@ -371,7 +371,7 @@ int main(void)
 		{
 			start_game_scenario(event_queue, ev, start_image, display, &start_game, &do_exit);
 		}
-		print_score(tipo_letra, puntaje, nivel, display, board, tablero, next_pieza->mat_de_pieza);
+		print_score(tipo_letra, puntaje, highscore,nivel, display, board, tablero, next_pieza->mat_de_pieza);
 		if (al_get_next_event(event_queue, &ev))
 		{
 			if (ev.type == ALLEGRO_EVENT_TIMER)
@@ -490,8 +490,11 @@ int main(void)
 
 			if ((nivel >= MAX_NIVEL) || (end_game = chequear_lineas(tablero, ALTURA_LIMITE, N, FIJO)))  //que pasa cuando se llega a game over
 			{
-				end_game_scenario(event_queue, ev, timer_pieza, ultimo_movimiento, display, tipo_letra, tipo_letra_pausa_1, puntaje, &restart, &do_exit);
-
+				end_game_scenario(event_queue, ev, timer_pieza, ultimo_movimiento, display, tipo_letra, tipo_letra_pausa_1, puntaje,highscore, &restart, &do_exit);
+				if (puntaje > highscore)
+				{
+					set_highscore("highscore.txt", puntaje);
+				}
 			}
 
 		}
