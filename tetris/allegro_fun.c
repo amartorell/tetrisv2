@@ -14,12 +14,12 @@ void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t
 
 
 	int i, j;
-	for (i = (ALTURA_LIMITE - 1); i < N + 5; i++)
+	for (i = (ALTURA_LIMITE - 2); i < N + 5; i++)
 	{
-		for (j = 0; j < N; j++)
+		for (j = 1; j < N-1; j++)
 		{
 
-			if ((i == (ALTURA_LIMITE - 1)))
+			if ((i == (ALTURA_LIMITE - 2)))
 			{
 				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("red"));
 			}

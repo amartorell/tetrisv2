@@ -34,7 +34,7 @@ typedef int bool;
 #define OCUPADO 1
 #define FIJO 2	
 #define BORDE 3
-#define ALTURA_LIMITE   3
+#define ALTURA_LIMITE   2
 
 
 #define  ABAJO  'a'
@@ -42,7 +42,7 @@ typedef int bool;
 #define  IZQUIERDA 'i'
 
 #define X_INICIAL ((N-4)/2) //posiciones iniciales donde arrancan cada pieza //PARA QUE ARRANCQUE JUSTO A LA MITAD
-#define Y_INICIAL 1
+#define Y_INICIAL 0
 
 
 enum piezas {PIEZA_L,PIEZA_J,PIEZA_O,PIEZA_S,PIEZA_Z,PIEZA_T,PIEZA_I}; //listado de las piezas 
