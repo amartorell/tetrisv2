@@ -330,6 +330,7 @@ int main(void)
 
 		if (restart == TRUE)
 		{
+			highscore = get_highscore("highscore.txt");
 			set_board(tablero);
 			puntaje = PUNTAJE_INICIAL;
 			nivel = NIVEL_INICIAL;
@@ -371,7 +372,7 @@ int main(void)
 		{
 			start_game_scenario(event_queue, ev, start_image, display, &start_game, &do_exit);
 		}
-		print_score(tipo_letra, puntaje, highscore,nivel, display, board, tablero, next_pieza->mat_de_pieza);
+		print_score(tipo_letra, puntaje, highscore,nivel, display, board, tablero, next_pieza,pieza->nombre);
 		if (al_get_next_event(event_queue, &ev))
 		{
 			if (ev.type == ALLEGRO_EVENT_TIMER)
@@ -416,8 +417,7 @@ int main(void)
 					if (!chequear_movimiento(pieza, tablero, pieza->mov_vertical, ABAJO))
 					{
 						estampar_bloque(pieza, tablero, &puntaje);
-						dibujar_tablero(board, display, tablero, next_pieza->mat_de_pieza);
-
+						dibujar_tablero(board, display, tablero, pieza->nombre);
 						copiar_pieza(pieza, next_pieza);
 						free(next_pieza);
 						next_pieza = crear_pieza();

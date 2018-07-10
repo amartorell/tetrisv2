@@ -5,9 +5,9 @@
 #include <stdlib.h>
 
 
-void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t mat[N + 5][N])
+void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t mat[N + 5][N],uint16_t color)
 {
-
+	char * colores[] = { "midnightblue","mediumspringgreen","goldenrod","maroon","deeppink","orange","magenta" };
 	al_set_target_bitmap(bitmap);
 	al_clear_to_color(al_color_name("black"));
 
@@ -19,28 +19,32 @@ void dibujar_tablero(ALLEGRO_BITMAP * bitmap, ALLEGRO_DISPLAY * display, uint8_t
 		for (j = 1; j < N-1; j++)
 		{
 
-			if ((i == (ALTURA_LIMITE - 2)))
+			if ((mat[i][j] == OCUPADO) /*|| (mat[i][j] == FIJO)*/) 
 			{
-				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("red"));
-			}
-			if (mat[i][j] == OCUPADO)
-			{
-				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("goldenrod"));
+				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name(colores[color]));
+				al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
 			}
 			else if (mat[i][j] == FIJO)
 			{
-				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("lightsteelblue"));
-			}
-			else if (mat[i][j] == VACANTE)
-			{
+				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("cornsilk"));
 				al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
 			}
+			//else if (mat[i][j] == VACANTE)
+			//{
+			//	//al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
+			//}
 			else if ((mat[i][j] == BORDE))
 			{
 				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("red"));
+				al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
+			}
+			if ((i == (ALTURA_LIMITE - 2)))
+			{
+				al_draw_filled_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("red"));
+				al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
 			}
 
-			al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
+			//al_draw_rectangle(ANCHO_BLOQUE*j, ALTURA_BLOQUE*i, ANCHO_BLOQUE + ANCHO_BLOQUE * j, ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
 		}
 
 	}
@@ -106,17 +110,16 @@ void end_game_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev,ALLEG
 	
 
 	al_draw_text(tipo_letra_pausa_1, al_color_name("royalblue"), 130, 135, 0, "GAME OVER");
-	
-	
-	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), 165+110, 135 + 60 + 75 +OFFSET*4, 0, "PRESS ESC TO EXIT");
-	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), 165+95, 135 + 60 + 75 + OFFSET*6, 0, "PRESS R TO RESTART");
+
+	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), ESC_X, ESC_Y+OFFSET*4, 0, "PRESS ESC TO EXIT");
+	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), RESTART_X, RESTART_Y + OFFSET*6, 0, "PRESS R TO RESTART");
 	if (puntaje > highscore)
 	{
-		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 165 + 105, 135 + 60 + 75 + OFFSET * 9, 0, "NEW HIGHSCORE: %d",puntaje);
+		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), HSCORE_X, SCORE_Y + OFFSET * 2, 0, "NEW HIGHSCORE: %d",puntaje);
 	}
 	else
 	{
-		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), 340, 135 + 60 + 75 + OFFSET * 2, 0, "SCORE : %d", puntaje);
+		al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), SCORE_X, SCORE_Y+ OFFSET * 2, 0, "SCORE : %d", puntaje);
 	}
 	
 	
@@ -219,8 +222,9 @@ void pause_scenario(ALLEGRO_EVENT_QUEUE * event_queue, ALLEGRO_EVENT ev, ALLEGRO
 	al_flip_display();
 }
 
-void print_score(ALLEGRO_FONT *tipo_letra, uint16_t puntaje,uint16_t highscore, uint16_t nivel, ALLEGRO_DISPLAY *display,ALLEGRO_BITMAP *board, uint8_t tablero[N + 5][N],uint8_t next_pieza[SIZE][SIZE])
+void print_score(ALLEGRO_FONT *tipo_letra, uint16_t puntaje,uint16_t highscore, uint16_t nivel, ALLEGRO_DISPLAY *display,ALLEGRO_BITMAP *board, uint8_t tablero[N + 5][N],bloque_t * next_bloque,uint16_t color_pieza)
 {
+	char * colores[] = { "midnightblue","mediumspringgreen","goldenrod","maroon","deeppink","orange","magenta" };
 	al_set_target_bitmap(al_get_backbuffer(display)); //vuelvo a pintar de negro el bitmap
 	al_clear_to_color(al_color_name("black")); //para actualizar el score y que no se superponga
 
@@ -239,22 +243,22 @@ void print_score(ALLEGRO_FONT *tipo_letra, uint16_t puntaje,uint16_t highscore, 
 	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), POS_X+9, POS_Y + OFFSET * 10, 0, "LEVEL:");
 	al_draw_textf(tipo_letra, al_color_name("lightsteelblue"), POS_X + OFFSET * 3, POS_Y + OFFSET * 11, 0, "%d", nivel);
 
-	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), POS_X +500, POS_Y, 0, "NEXT:");
+	al_draw_text(tipo_letra, al_color_name("lightsteelblue"), POS_X +NEXTTXT_X, POS_Y, 0, "NEXT:");
 
 	int i, j;
-	for (i = 0; i < 5; i++)	//para la pieza que sigue
+	for (i = 0; i < SIZE; i++)	//para la pieza que sigue
 	{
-		for (j = 0; j < 5; j++)
+		for (j = 0; j < SIZE; j++)
 		{
-			if (next_pieza[i][j] == OCUPADO)
+			if ((next_bloque->mat_de_pieza[i][j]) == OCUPADO)
 			{
-				al_draw_filled_rectangle(600 + ANCHO_BLOQUE * j, OFFSET + POS_Y +ALTURA_BLOQUE*i, 600 + ANCHO_BLOQUE + ANCHO_BLOQUE * j, OFFSET + POS_Y + ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("goldenrod"));
-				al_draw_rectangle(600 + ANCHO_BLOQUE * j, OFFSET + POS_Y+ALTURA_BLOQUE*i, 600 + ANCHO_BLOQUE + ANCHO_BLOQUE * j, OFFSET + POS_Y+ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
+				al_draw_filled_rectangle(NEXT_X + ANCHO_BLOQUE * j, OFFSET + POS_Y +ALTURA_BLOQUE*i, NEXT_X + ANCHO_BLOQUE + ANCHO_BLOQUE * j, OFFSET + POS_Y + ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name(colores[(next_bloque->nombre)]));
+				al_draw_rectangle(NEXT_X + ANCHO_BLOQUE * j, OFFSET + POS_Y+ALTURA_BLOQUE*i, NEXT_X + ANCHO_BLOQUE + ANCHO_BLOQUE * j, OFFSET + POS_Y+ANCHO_BLOQUE + ALTURA_BLOQUE * i, al_color_name("purple"), 1);
 			}
 		}
 	}
 
-	dibujar_tablero(board, display, tablero);  //siempre dibujo el tablero
+	dibujar_tablero(board, display, tablero,color_pieza);  //siempre dibujo el tablero
 
 }
 

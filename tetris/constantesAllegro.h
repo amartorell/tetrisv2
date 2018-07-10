@@ -22,6 +22,18 @@
 #define POS_X 100
 #define POS_Y 150
 #define OFFSET 24
+#define NEXT_X	600
+#define NEXTTXT_X 500
+#define ESC_X	275
+#define ESC_Y	270
+#define RESTART_X	260
+#define RESTART_Y 	270
+#define SCORE_Y 270
+#define SCORE_X 340
+#define HSCORE_X 270
+
+
+
 
 enum MYKEYS { KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT };
 

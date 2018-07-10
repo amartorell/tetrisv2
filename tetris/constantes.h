@@ -34,7 +34,7 @@ typedef int bool;
 #define OCUPADO 1
 #define FIJO 2	
 #define BORDE 3
-#define ALTURA_LIMITE   2
+#define ALTURA_LIMITE   6
 
 
 #define  ABAJO  'a'
